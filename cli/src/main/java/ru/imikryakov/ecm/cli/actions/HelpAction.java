@@ -1,7 +1,7 @@
 package ru.imikryakov.ecm.cli.actions;
 
 public class HelpAction extends Action {
-    public HelpAction() {
+    HelpAction() {
         super("help", "print list of commands");
     }
 

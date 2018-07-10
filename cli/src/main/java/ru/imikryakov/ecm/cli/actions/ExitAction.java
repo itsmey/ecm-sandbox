@@ -1,7 +1,7 @@
 package ru.imikryakov.ecm.cli.actions;
 
 public class ExitAction extends Action {
-    public ExitAction() {
+    ExitAction() {
         super("exit", "exit command-line interface");
     }
 

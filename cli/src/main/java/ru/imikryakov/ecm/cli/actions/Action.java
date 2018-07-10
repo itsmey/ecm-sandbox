@@ -1,10 +1,9 @@
 package ru.imikryakov.ecm.cli.actions;
 
 import ru.imikryakov.ecm.cli.Launcher;
+import ru.imikryakov.ecm.types.FolderHierarchy;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class Action {
@@ -17,6 +16,12 @@ public abstract class Action {
     public static void createActions() {
         new HelpAction();
         new ExitAction();
+        new PrintCurrentAction();
+        new ListAction();
+        new GoToFolderAction();
+        new UpAction();
+        new CreateDocumentAction();
+        new CreateFolderAction();
     }
 
     public static Action get(String id) {
@@ -27,7 +32,7 @@ public abstract class Action {
         return map;
     }
 
-    public Action(String id, String description) {
+    Action(String id, String description) {
         this.id = id;
         this.description = description;
         map.put(id, this);
@@ -51,11 +56,19 @@ public abstract class Action {
         Launcher.getOutput().println(s);
     }
 
+    static void print(String s) {
+        Launcher.getOutput().print(s);
+    }
+
     static void format(String format, Object... args) {
         Launcher.getOutput().format(format, args);
     }
 
     static String next() {
         return Launcher.getScanner().next();
+    }
+
+    static FolderHierarchy getHierarchy() {
+        return Launcher.getHierarchy();
     }
 }
