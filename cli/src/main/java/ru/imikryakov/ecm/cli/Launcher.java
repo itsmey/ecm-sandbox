@@ -1,5 +1,7 @@
 package ru.imikryakov.ecm.cli;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.imikryakov.ecm.Hierarchy;
 import ru.imikryakov.ecm.cli.actions.Action;
 
@@ -7,6 +9,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 public class Launcher {
+    private static final Logger logger = LogManager.getLogger(Launcher.class.getName());
     private static final PrintStream OUTPUT = System.out;
     private static final Scanner SCANNER = new Scanner(System.in);
 
@@ -31,6 +34,7 @@ public class Launcher {
             if (action == null) {
                 OUTPUT.println("No such command.");
             } else {
+                logger.trace("performing action " + action.getId());
                 action.perform();
             }
         } while (action == null || !action.isCanClose());
