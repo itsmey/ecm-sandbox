@@ -1,4 +1,4 @@
-package ru.imikryakov.ecm;
+package ru.imikryakov.ecm.objects;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,4 @@
-package ru.imikryakov.ecm;
-
-import java.util.Map;
+package ru.imikryakov.ecm.objects;
 
 public class Document extends EcmObject {
     public Document(String name) {
