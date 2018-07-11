@@ -23,6 +23,7 @@ public abstract class Action {
         new UpAction();
         new CreateDocumentAction();
         new CreateFolderAction();
+        new FromXmlAction();
     }
 
     public static Action get(String id) {
@@ -71,5 +72,9 @@ public abstract class Action {
 
     static FolderHierarchy getHierarchy() {
         return Launcher.getHierarchy();
+    }
+
+    static void setHierarchy(FolderHierarchy hierarchy) {
+        Launcher.setHierarchy(hierarchy);
     }
 }

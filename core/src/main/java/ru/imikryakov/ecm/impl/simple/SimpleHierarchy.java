@@ -1,20 +1,45 @@
 package ru.imikryakov.ecm.impl.simple;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.imikryakov.ecm.types.Containable;
 import ru.imikryakov.ecm.types.Document;
 import ru.imikryakov.ecm.types.Folder;
 import ru.imikryakov.ecm.types.FolderHierarchy;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Comparator;
 import java.util.List;
 
 public class SimpleHierarchy implements FolderHierarchy {
+    private static Logger logger = LogManager.getLogger();
     private final Folder rootFolder;
     private Folder currentFolder;
 
     public SimpleHierarchy() {
         rootFolder = SimpleFolder.createRoot();
         currentFolder = rootFolder;
+    }
+
+    public static FolderHierarchy fromXml(String fileName) {
+        logger.trace("fromXml");
+        try {
+            JAXBContext jc = JAXBContext.newInstance();
+            Unmarshaller u = jc.createUnmarshaller();
+            SimpleHierarchyXmlDescription description = (SimpleHierarchyXmlDescription )u.unmarshal(new FileInputStream(fileName));
+            return fromDescription(description);
+        } catch (JAXBException | FileNotFoundException e) {
+            logger.error(e);
+            return null;
+        }
+    }
+
+    private static FolderHierarchy fromDescription(SimpleHierarchyXmlDescription description) {
+        return new SimpleHierarchy();
     }
 
     @Override

@@ -14,7 +14,7 @@ public class Launcher {
     private static final Logger logger = LogManager.getLogger(Launcher.class.getName());
     private static final PrintStream OUTPUT = System.out;
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static final FolderHierarchy hierarchy = FolderHierarchyFactory.createSimpleHierarchy();
+    private static FolderHierarchy hierarchy = FolderHierarchyFactory.createSimpleHierarchy();
 
     public static void main(String[] args) {
         HierarchyRandomizer.populate(hierarchy);
@@ -54,5 +54,9 @@ public class Launcher {
 
     public static FolderHierarchy getHierarchy() {
         return hierarchy;
+    }
+
+    public static void setHierarchy(FolderHierarchy hierarchy) {
+        Launcher.hierarchy = hierarchy;
     }
 }
