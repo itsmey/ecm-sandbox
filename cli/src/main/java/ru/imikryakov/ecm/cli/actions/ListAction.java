@@ -21,14 +21,7 @@ public class ListAction extends Action {
 
         println("Contents of folder " + getHierarchy().getCurrentFolder().getName() + ":\n");
 
-        children.sort((o1, o2) -> {
-            if (o1 instanceof Folder && o2 instanceof Document)
-                return -1;
-            else if (o1 instanceof Document && o2 instanceof Folder)
-                return 1;
-            else
-                return o1.getName().compareTo(o2.getName());
-        });
+        children.sort(getHierarchy().getComparator());
 
         for (Containable c : children) {
             if (c instanceof Folder)

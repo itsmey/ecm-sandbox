@@ -1,13 +1,15 @@
 package ru.imikryakov.ecm.impl.simple;
 
 import ru.imikryakov.ecm.types.Containable;
+import ru.imikryakov.ecm.types.Document;
 import ru.imikryakov.ecm.types.Folder;
 import ru.imikryakov.ecm.types.FolderHierarchy;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class SimpleHierarchy implements FolderHierarchy {
-    private Folder rootFolder;
+    private final Folder rootFolder;
     private Folder currentFolder;
 
     public SimpleHierarchy() {
@@ -21,8 +23,18 @@ public class SimpleHierarchy implements FolderHierarchy {
     }
 
     @Override
+    public void setRootAsCurrent() {
+        currentFolder = rootFolder;
+    }
+
+    @Override
     public Folder getCurrentFolder() {
         return currentFolder;
+    }
+
+    @Override
+    public void setCurrentFolder(Folder f) {
+        currentFolder = f;
     }
 
     @Override
@@ -65,5 +77,17 @@ public class SimpleHierarchy implements FolderHierarchy {
     @Override
     public void createFolder(String name) {
         currentFolder.addChild(new SimpleFolder(name));
+    }
+
+    @Override
+    public Comparator<Containable> getComparator() {
+        return (o1, o2) -> {
+            if (o1 instanceof Folder && o2 instanceof Document)
+                return -1;
+            else if (o1 instanceof Document && o2 instanceof Folder)
+                return 1;
+            else
+                return o1.getName().compareTo(o2.getName());
+        };
     }
 }

@@ -18,6 +18,7 @@ public abstract class Action {
         new ExitAction();
         new PrintCurrentAction();
         new ListAction();
+        new ListAllAction();
         new GoToFolderAction();
         new UpAction();
         new CreateDocumentAction();
