@@ -3,6 +3,7 @@ package ru.imikryakov.ecm.cli;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.imikryakov.ecm.FolderHierarchyFactory;
+import ru.imikryakov.ecm.HierarchyRandomizer;
 import ru.imikryakov.ecm.cli.actions.Action;
 import ru.imikryakov.ecm.types.FolderHierarchy;
 
@@ -16,6 +17,7 @@ public class Launcher {
     private static final FolderHierarchy hierarchy = FolderHierarchyFactory.createSimpleHierarchy();
 
     public static void main(String[] args) {
+        HierarchyRandomizer.populate(hierarchy);
         Action.createActions();
 
         try {
