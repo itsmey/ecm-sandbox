@@ -2,15 +2,24 @@ package ru.imikryakov.ecm.impl.simple;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.imikryakov.ecm.types.Containable;
+import ru.imikryakov.ecm.types.Document;
 import ru.imikryakov.ecm.types.Folder;
 import ru.imikryakov.ecm.types.FolderHierarchy;
 
 import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement(name = "hierarchy")
 class SimpleHierarchyXmlDescription {
     private static Logger logger = LogManager.getLogger();
+
+    SimpleHierarchyXmlDescription() {}
+
+    SimpleHierarchyXmlDescription(FolderHierarchy hierarchy) {
+        rootFolder = new FolderDescription(hierarchy.getRootFolder());
+    }
 
     @XmlElement(name = "folder")
     private FolderDescription rootFolder;
@@ -20,6 +29,25 @@ class SimpleHierarchyXmlDescription {
     }
 
     static class FolderDescription {
+        FolderDescription() {}
+
+        FolderDescription(Folder folder) {
+            name = folder.getName();
+            if (folder.getChildren().isEmpty()) {
+                contents = null;
+            } else {
+                contents = new ArrayList();
+                for (Containable c : folder.getChildren()) {
+                    if (c instanceof Document) {
+                        contents.add(new DocumentDescription((Document)c));
+                    }
+                    if (c instanceof Folder) {
+                        contents.add(new FolderDescription((Folder)c));
+                    }
+                }
+            }
+        }
+
         @XmlAttribute(required = true)
         private String name;
 
@@ -39,6 +67,12 @@ class SimpleHierarchyXmlDescription {
     }
 
     static class DocumentDescription {
+        DocumentDescription() {}
+
+        DocumentDescription(Document document) {
+            name = document.getName();
+        }
+
         @XmlAttribute(required = true)
         private String name;
 

@@ -15,4 +15,5 @@ public interface FolderHierarchy {
     void createDocument(String name);
     void createFolder(String name);
     Comparator<Containable> getComparator();
+    void export(String filename);
 }

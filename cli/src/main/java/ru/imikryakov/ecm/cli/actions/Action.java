@@ -24,6 +24,7 @@ public abstract class Action {
         new CreateDocumentAction();
         new CreateFolderAction();
         new FromXmlAction();
+        new ToXmlAction();
     }
 
     public static Action get(String id) {

@@ -9,7 +9,9 @@ import ru.imikryakov.ecm.types.FolderHierarchy;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Comparator;
@@ -114,5 +116,19 @@ public class SimpleHierarchy implements FolderHierarchy {
             else
                 return o1.getName().compareTo(o2.getName());
         };
+    }
+
+    @Override
+    public void export(String filename) {
+        try {
+            SimpleHierarchyXmlDescription description = new SimpleHierarchyXmlDescription(this);
+            JAXBContext jc = JAXBContext.newInstance(SimpleHierarchyXmlDescription.class);
+            Marshaller m = jc.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            m.marshal(description, new File(filename));
+        } catch (JAXBException e) {
+            logger.error(e);
+
+        }
     }
 }
