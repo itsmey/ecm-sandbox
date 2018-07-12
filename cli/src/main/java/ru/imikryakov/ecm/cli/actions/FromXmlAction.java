@@ -9,7 +9,7 @@ public class FromXmlAction extends Action {
 
     @Override
     public void perform() {
-        print("Enter name of the folder: ");
+        print("Enter name of the XML file: ");
         setHierarchy(FolderHierarchyFactory.createSimpleHierarchyFromXML(next()));
     }
 }

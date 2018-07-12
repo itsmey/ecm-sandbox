@@ -14,7 +14,7 @@
         <Logger name="ru.imikryakov.ecm.cli.Launcher" level="trace" additivity="false">
             <AppenderRef ref="cliActionsHistory"/>
         </Logger>
-        <Logger name="ru.imikryakov.ecm.cli.Launcher" level="trace">
+        <Logger name="ru.imikryakov.ecm" level="trace">
             <AppenderRef ref="Console"/>
         </Logger>
         <root level="info">
