@@ -23,14 +23,15 @@ public class HierarchyFormatter {
     }
 
     private static void addCurrentFolder(FolderHierarchy hierarchy, String indent, StringBuilder sb) {
+        sb.append(indent).append("[").append(hierarchy.getCurrentFolder().getName()).append("]").append("\n");
         List<Containable> children = hierarchy.getCurrentFolder().getChildren();
         children.sort(hierarchy.getComparator());
         for (Containable c : children) {
             if (c instanceof Document) {
-                sb.append(indent).append(c.getName()).append("\n");
+                sb.append(indent + "  ").append(c.getName()).append("\n");
             }
             if (c instanceof Folder) {
-                sb.append(indent).append("[").append(c.getName()).append("]").append("\n");
+
                 hierarchy.goToFolder(c.getName());
                 addCurrentFolder(hierarchy, indent + "  ", sb);
                 hierarchy.up();

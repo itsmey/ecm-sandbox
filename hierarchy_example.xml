@@ -1,0 +1,14 @@
+<hierarchy>
+    <folder name="Root">
+        <contents>
+            <folder name="Folder1">
+                    <contents>
+                        <document name="Doc3"/>
+                    </contents>
+            </folder>
+            <folder name="Folder2"/>
+            <document name="Doc1"/>
+            <document name="Doc2"/>
+        </contents>
+    </folder>
+</hierarchy>

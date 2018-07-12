@@ -3,6 +3,7 @@ package ru.imikryakov.ecm.cli;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.imikryakov.ecm.FolderHierarchyFactory;
+import ru.imikryakov.ecm.FolderHierarchyManager;
 import ru.imikryakov.ecm.HierarchyRandomizer;
 import ru.imikryakov.ecm.cli.actions.Action;
 import ru.imikryakov.ecm.types.FolderHierarchy;
@@ -14,10 +15,9 @@ public class Launcher {
     private static final Logger logger = LogManager.getLogger(Launcher.class.getName());
     private static final PrintStream OUTPUT = System.out;
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static FolderHierarchy hierarchy = FolderHierarchyFactory.createSimpleHierarchy();
+    private static FolderHierarchy hierarchy = FolderHierarchyManager.SIMPLE.createRandomized();
 
     public static void main(String[] args) {
-        HierarchyRandomizer.populate(hierarchy);
         Action.createActions();
 
         try {

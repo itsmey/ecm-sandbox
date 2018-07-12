@@ -1,7 +1,77 @@
 package ru.imikryakov.ecm.impl.simple;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import ru.imikryakov.ecm.types.Folder;
+import ru.imikryakov.ecm.types.FolderHierarchy;
 
-@XmlRootElement
-public class SimpleHierarchyXmlDescription {
+import javax.xml.bind.annotation.*;
+import java.util.List;
+
+@XmlRootElement(name = "hierarchy")
+class SimpleHierarchyXmlDescription {
+    private static Logger logger = LogManager.getLogger();
+
+    @XmlElement(name = "folder")
+    private FolderDescription rootFolder;
+
+    FolderDescription getRootFolder() {
+        return rootFolder;
+    }
+
+    static class FolderDescription {
+        @XmlAttribute(required = true)
+        private String name;
+
+        @XmlElementWrapper(name = "contents")
+        @XmlElements({
+                @XmlElement(name="folder", type = FolderDescription.class),
+                @XmlElement(name="document", type = DocumentDescription.class)})
+        private List contents;
+
+        String getName() {
+            return name;
+        }
+
+        List getContents() {
+            return contents;
+        }
+    }
+
+    static class DocumentDescription {
+        @XmlAttribute(required = true)
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    FolderHierarchy createHierarchy() {
+        Folder rootFolder = new SimpleFolder(getRootFolder().getName());
+        FolderHierarchy hierarchy = new SimpleHierarchy(rootFolder);
+        hierarchy.setRootAsCurrent();
+
+        processContents(getRootFolder().getContents(), hierarchy);
+
+        hierarchy.setRootAsCurrent();
+        return hierarchy;
+    }
+
+    private void processContents(List contents, FolderHierarchy hierarchy) {
+        for (Object c : contents) {
+            if (c instanceof DocumentDescription) {
+                hierarchy.createDocument(((DocumentDescription)c).getName());
+            }
+            if (c instanceof FolderDescription) {
+                String folderName = ((FolderDescription)c).getName();
+                hierarchy.createFolder(folderName);
+                if (((FolderDescription)c).getContents() != null) {
+                    hierarchy.goToFolder(folderName);
+                    processContents(((FolderDescription) c).getContents(), hierarchy);
+                    hierarchy.up();
+                }
+            }
+        }
+    }
 }

@@ -1,6 +1,6 @@
 package ru.imikryakov.ecm.cli.actions;
 
-import ru.imikryakov.ecm.FolderHierarchyFactory;
+import ru.imikryakov.ecm.FolderHierarchyManager;
 
 public class FromXmlAction extends Action {
     FromXmlAction() {
@@ -10,6 +10,6 @@ public class FromXmlAction extends Action {
     @Override
     public void perform() {
         print("Enter name of the XML file: ");
-        setHierarchy(FolderHierarchyFactory.createSimpleHierarchyFromXML(next()));
+        setHierarchy(FolderHierarchyManager.SIMPLE.createFromXML(next()));
     }
 }

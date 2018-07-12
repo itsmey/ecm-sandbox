@@ -17,29 +17,29 @@ import java.util.List;
 
 public class SimpleHierarchy implements FolderHierarchy {
     private static Logger logger = LogManager.getLogger();
-    private final Folder rootFolder;
+    private Folder rootFolder;
     private Folder currentFolder;
 
-    public SimpleHierarchy() {
-        rootFolder = SimpleFolder.createRoot();
-        currentFolder = rootFolder;
+    SimpleHierarchy(Folder rootFolder) {
+        this.rootFolder = rootFolder;
+    }
+
+    public static FolderHierarchy empty() {
+        SimpleHierarchy hierarchy = new SimpleHierarchy(SimpleFolder.createRoot());
+        hierarchy.currentFolder = hierarchy.rootFolder;
+        return hierarchy;
     }
 
     public static FolderHierarchy fromXml(String fileName) {
-        logger.trace("fromXml");
         try {
-            JAXBContext jc = JAXBContext.newInstance();
+            JAXBContext jc = JAXBContext.newInstance(SimpleHierarchyXmlDescription.class);
             Unmarshaller u = jc.createUnmarshaller();
             SimpleHierarchyXmlDescription description = (SimpleHierarchyXmlDescription )u.unmarshal(new FileInputStream(fileName));
-            return fromDescription(description);
+            return description.createHierarchy();
         } catch (JAXBException | FileNotFoundException e) {
             logger.error(e);
             return null;
         }
-    }
-
-    private static FolderHierarchy fromDescription(SimpleHierarchyXmlDescription description) {
-        return new SimpleHierarchy();
     }
 
     @Override
