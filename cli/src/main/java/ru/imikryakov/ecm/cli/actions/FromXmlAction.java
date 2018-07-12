@@ -10,6 +10,6 @@ public class FromXmlAction extends Action {
     @Override
     public void perform() {
         print("Enter name of the XML file: ");
-        setHierarchy(FolderHierarchyManager.SIMPLE.createFromXML(next()));
+        setHierarchy(FolderHierarchyManager.get().createFromXML(next()));
     }
 }
