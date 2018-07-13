@@ -5,4 +5,6 @@ public interface Properties {
         String TITLE = "hierarchy.type";
         String SIMPLE = "SIMPLE";
     }
+
+    String SQLITE_DB_NAME = "hierarchy.sqlite.dbname";
 }
