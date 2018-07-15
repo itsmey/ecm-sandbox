@@ -34,8 +34,9 @@ class SimpleFolder extends SimpleEcmObject implements Folder {
     }
 
     @Override
-    public void addChild(Containable child) {
+    public Containable addChild(Containable child) {
         children.add(child);
         child.setParent(this);
+        return child;
     }
 }

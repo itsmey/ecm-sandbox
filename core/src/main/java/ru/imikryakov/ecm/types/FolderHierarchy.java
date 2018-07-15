@@ -12,8 +12,10 @@ public interface FolderHierarchy {
     List<Containable> list();
     void goToFolder(String name);
     void up();
-    void createDocument(String name);
-    void createFolder(String name);
+    Document createDocument(String name);
+    Document createDocument(String name, Folder parent);
+    Folder createFolder(String name);
+    Folder createFolder(String name, Folder parent);
     Comparator<Containable> getComparator();
     void export(String filename);
 }
