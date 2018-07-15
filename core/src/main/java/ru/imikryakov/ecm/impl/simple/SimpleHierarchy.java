@@ -78,9 +78,7 @@ public class SimpleHierarchy implements FolderHierarchy {
 
     @Override
     public Document createDocument(String name) {
-        Document d = new SimpleDocument(name);
-        currentFolder.addChild(new SimpleDocument(name));
-        return d;
+        return createDocument(name, currentFolder);
     }
 
     @Override
@@ -93,9 +91,7 @@ public class SimpleHierarchy implements FolderHierarchy {
 
     @Override
     public Folder createFolder(String name) {
-        Folder f = new SimpleFolder(name);
-        currentFolder.addChild(new SimpleFolder(name));
-        return f;
+        return createFolder(name, currentFolder);
     }
 
     @Override
@@ -128,7 +124,10 @@ public class SimpleHierarchy implements FolderHierarchy {
             m.marshal(description, new File(filename));
         } catch (JAXBException e) {
             logger.error(e);
-
         }
+    }
+
+    @Override
+    public void close() {
     }
 }

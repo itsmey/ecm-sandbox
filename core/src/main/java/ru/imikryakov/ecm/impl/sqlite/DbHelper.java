@@ -39,7 +39,7 @@ public class DbHelper {
         }
     }
 
-    private void close() throws SQLException {
+    void close() throws SQLException {
         if (connection != null) {
             connection.close();
         }
@@ -50,7 +50,8 @@ public class DbHelper {
         String queryFolder = "CREATE IF NOT EXISTS TABLE Folder " +
                 "(ID INT PRIMARY KEY NOT NULL, " +
                 "NAME VARCHAR(100) NOT NULL, " +
-                "PARENT_ID INT)";
+                "PARENT_ID INT, " +
+                "IS_CURRENT INT)";
         String queryDocument = "CREATE IF NOT EXISTS TABLE Document " +
                 "(ID INT PRIMARY KEY NOT NULL, " +
                 "NAME VARCHAR(100) NOT NULL, " +

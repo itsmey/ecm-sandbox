@@ -6,6 +6,6 @@ import ru.imikryakov.ecm.types.FolderHierarchy;
 public class SqliteHierarchyFactory extends SimpleHierarchyFactory {
     @Override
     public FolderHierarchy createEmpty() {
-        return null;
+        return new SqliteHierarchy();
     }
 }
