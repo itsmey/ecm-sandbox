@@ -10,10 +10,6 @@ class SimpleFolder extends SimpleEcmObject implements Folder {
     private Folder parent;
     private List<Containable> children = new ArrayList<>();
 
-    static Folder createRoot() {
-        return new SimpleFolder("Root");
-    }
-
     SimpleFolder(String name) {
         super(name);
     }
@@ -34,8 +30,9 @@ class SimpleFolder extends SimpleEcmObject implements Folder {
     }
 
     @Override
-    public void addChild(Containable child) {
+    public Containable addChild(Containable child) {
         children.add(child);
         child.setParent(this);
+        return child;
     }
 }

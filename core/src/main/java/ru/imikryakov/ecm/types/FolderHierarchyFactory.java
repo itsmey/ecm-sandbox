@@ -1,7 +1,4 @@
-package ru.imikryakov.ecm;
-
-import ru.imikryakov.ecm.impl.simple.SimpleHierarchy;
-import ru.imikryakov.ecm.types.FolderHierarchy;
+package ru.imikryakov.ecm.types;
 
 public interface FolderHierarchyFactory {
     FolderHierarchy createEmpty();

@@ -2,15 +2,17 @@ package ru.imikryakov.ecm.impl.simple;
 
 import ru.imikryakov.ecm.types.EcmObject;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 abstract class SimpleEcmObject implements EcmObject {
-    String name;
-    Map<String, Object> properties = new HashMap<>();
+    private String name;
+    private Map<String, Object> properties = new HashMap<>();
 
     SimpleEcmObject(String name) {
         this.name = name;
+        properties.put("CreatedAt", new Date());
     }
 
     @Override

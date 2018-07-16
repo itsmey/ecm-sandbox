@@ -2,6 +2,7 @@ package ru.imikryakov.ecm.impl.simple;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.imikryakov.ecm.HierarchyXmlDescription;
 import ru.imikryakov.ecm.types.Containable;
 import ru.imikryakov.ecm.types.Document;
 import ru.imikryakov.ecm.types.Folder;
@@ -10,10 +11,7 @@ import ru.imikryakov.ecm.types.FolderHierarchy;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Comparator;
 import java.util.List;
 
@@ -22,26 +20,8 @@ public class SimpleHierarchy implements FolderHierarchy {
     private Folder rootFolder;
     private Folder currentFolder;
 
-    SimpleHierarchy(Folder rootFolder) {
-        this.rootFolder = rootFolder;
-    }
-
-    public static FolderHierarchy empty() {
-        SimpleHierarchy hierarchy = new SimpleHierarchy(SimpleFolder.createRoot());
-        hierarchy.currentFolder = hierarchy.rootFolder;
-        return hierarchy;
-    }
-
-    public static FolderHierarchy fromXml(String fileName) {
-        try {
-            JAXBContext jc = JAXBContext.newInstance(SimpleHierarchyXmlDescription.class);
-            Unmarshaller u = jc.createUnmarshaller();
-            SimpleHierarchyXmlDescription description = (SimpleHierarchyXmlDescription )u.unmarshal(new FileInputStream(fileName));
-            return description.createHierarchy();
-        } catch (JAXBException | FileNotFoundException e) {
-            logger.error(e);
-            return null;
-        }
+    protected SimpleHierarchy() {
+        this.rootFolder = createFolder("Root", null);
     }
 
     @Override
@@ -97,13 +77,29 @@ public class SimpleHierarchy implements FolderHierarchy {
     }
 
     @Override
-    public void createDocument(String name) {
-        currentFolder.addChild(new SimpleDocument(name));
+    public Document createDocument(String name) {
+        return createDocument(name, currentFolder);
     }
 
     @Override
-    public void createFolder(String name) {
-        currentFolder.addChild(new SimpleFolder(name));
+    public Document createDocument(String name, Folder parent) {
+        Document d = new SimpleDocument(name);
+        if (parent != null)
+            parent.addChild(new SimpleDocument(name));
+        return d;
+    }
+
+    @Override
+    public Folder createFolder(String name) {
+        return createFolder(name, currentFolder);
+    }
+
+    @Override
+    public Folder createFolder(String name, Folder parent) {
+        Folder f = new SimpleFolder(name);
+        if (parent != null)
+            parent.addChild(new SimpleFolder(name));
+        return f;
     }
 
     @Override
@@ -121,14 +117,17 @@ public class SimpleHierarchy implements FolderHierarchy {
     @Override
     public void export(String filename) {
         try {
-            SimpleHierarchyXmlDescription description = new SimpleHierarchyXmlDescription(this);
-            JAXBContext jc = JAXBContext.newInstance(SimpleHierarchyXmlDescription.class);
+            HierarchyXmlDescription description = new HierarchyXmlDescription(this);
+            JAXBContext jc = JAXBContext.newInstance(HierarchyXmlDescription.class);
             Marshaller m = jc.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             m.marshal(description, new File(filename));
         } catch (JAXBException e) {
             logger.error(e);
-
         }
+    }
+
+    @Override
+    public void close() {
     }
 }

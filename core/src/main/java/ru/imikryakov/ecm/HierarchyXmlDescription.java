@@ -1,4 +1,4 @@
-package ru.imikryakov.ecm.impl.simple;
+package ru.imikryakov.ecm;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement(name = "hierarchy")
-class SimpleHierarchyXmlDescription {
+public class HierarchyXmlDescription {
     private static Logger logger = LogManager.getLogger();
 
-    SimpleHierarchyXmlDescription() {}
+    public HierarchyXmlDescription() {}
 
-    SimpleHierarchyXmlDescription(FolderHierarchy hierarchy) {
+    public HierarchyXmlDescription(FolderHierarchy hierarchy) {
         rootFolder = new FolderDescription(hierarchy.getRootFolder());
     }
 
@@ -81,10 +81,8 @@ class SimpleHierarchyXmlDescription {
         }
     }
 
-    FolderHierarchy createHierarchy() {
-        Folder rootFolder = new SimpleFolder(getRootFolder().getName());
-        FolderHierarchy hierarchy = new SimpleHierarchy(rootFolder);
-        hierarchy.setRootAsCurrent();
+    public FolderHierarchy createHierarchy() {
+        FolderHierarchy hierarchy = FolderHierarchyManager.get().createEmpty();
 
         processContents(getRootFolder().getContents(), hierarchy);
 
