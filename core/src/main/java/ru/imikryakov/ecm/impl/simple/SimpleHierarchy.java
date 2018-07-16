@@ -15,12 +15,12 @@ import java.io.File;
 import java.util.Comparator;
 import java.util.List;
 
-public class SimpleHierarchy implements FolderHierarchy {
+class SimpleHierarchy implements FolderHierarchy {
     private static Logger logger = LogManager.getLogger();
     private Folder rootFolder;
     private Folder currentFolder;
 
-    protected SimpleHierarchy() {
+    SimpleHierarchy() {
         this.rootFolder = createFolder("Root", null);
     }
 

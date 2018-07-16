@@ -8,7 +8,7 @@ import ru.imikryakov.ecm.types.Folder;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class SqliteContainable implements Containable {
+abstract class SqliteContainable implements Containable {
     static Logger logger = LogManager.getLogger();
     String id;
     DbHelper dbHelper;

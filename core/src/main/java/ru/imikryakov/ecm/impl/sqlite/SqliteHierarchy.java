@@ -2,18 +2,18 @@ package ru.imikryakov.ecm.impl.sqlite;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.imikryakov.ecm.impl.simple.SimpleHierarchy;
 import ru.imikryakov.ecm.types.Containable;
 import ru.imikryakov.ecm.types.Document;
 import ru.imikryakov.ecm.types.Folder;
 import ru.imikryakov.ecm.types.FolderHierarchy;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.List;
 
+import javax.security.auth.Subject;
+
 public class SqliteHierarchy implements FolderHierarchy {
+    Subject subject = null;
     private static Logger logger = LogManager.getLogger();
     private DbHelper dbHelper;
 
