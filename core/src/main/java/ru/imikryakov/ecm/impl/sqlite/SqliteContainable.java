@@ -25,6 +25,10 @@ abstract class SqliteContainable implements Containable {
 
     @Override
     public Folder getParent() {
+        String parentId = (String)dbHelper.getValue("SELECT PARENT_ID FROM CONTAINABLE WHERE ID = ?", "PARENT_ID", id);
+        if (parentId == null) {
+            return null;
+        }
         return new SqliteFolder((String)dbHelper.getValue("SELECT PARENT_ID FROM CONTAINABLE WHERE ID = ?", "PARENT_ID", id), dbHelper);
     }
 

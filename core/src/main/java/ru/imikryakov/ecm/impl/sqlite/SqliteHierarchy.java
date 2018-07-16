@@ -10,15 +10,13 @@ import ru.imikryakov.ecm.types.FolderHierarchy;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.security.auth.Subject;
-
 public class SqliteHierarchy implements FolderHierarchy {
-    Subject subject = null;
     private static Logger logger = LogManager.getLogger();
     private DbHelper dbHelper;
 
     SqliteHierarchy() {
         dbHelper = DbHelper.getInstance();
+        dbHelper.init();
         createFolder("Root", null);
         setRootAsCurrent();
     }

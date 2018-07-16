@@ -26,6 +26,7 @@ public class Launcher {
             loop();
         } finally {
             SCANNER.close();
+            hierarchy.close();
         }
     }
 

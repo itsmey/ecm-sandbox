@@ -48,16 +48,23 @@ class DbHelper {
         }
     }
 
-    private void init() throws SQLException {
-        Statement stmt = connection.createStatement();
-        String query = "CREATE TABLE IF NOT EXISTS Containable " +
-                "(ID VARCHAR(100) PRIMARY KEY NOT NULL, " +
-                "NAME VARCHAR(100) NOT NULL, " +
-                "PARENT_ID VARCHAR(100), " +
-                "IS_CURRENT BOOLEAN, " +
-                "TYPE INT)";
-        stmt.executeUpdate(query);
-        stmt.close();
+    void init() {
+        try {
+            Statement stmt = connection.createStatement();
+            String dropQuery = "DROP TABLE IF EXISTS CONTAINABLE";
+            String createQuery = "CREATE TABLE IF NOT EXISTS Containable " +
+                    "(ID VARCHAR(100) PRIMARY KEY NOT NULL, " +
+                    "NAME VARCHAR(100) NOT NULL, " +
+                    "PARENT_ID VARCHAR(100), " +
+                    "IS_CURRENT BOOLEAN, " +
+                    "TYPE INT)";
+            stmt.executeUpdate(dropQuery);
+            stmt.executeUpdate(createQuery);
+            stmt.close();
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new RuntimeException(e);
+        }
     }
 
     PreparedStatement getPreparedStatement(String query) throws SQLException {
