@@ -65,6 +65,7 @@ public class SimpleHierarchy implements FolderHierarchy {
         for (Containable child : currentFolder.getChildren()) {
             if (child instanceof Folder && child.getName().equals(name)) {
                 currentFolder = (Folder)child;
+                return;
             }
         }
     }
@@ -85,7 +86,7 @@ public class SimpleHierarchy implements FolderHierarchy {
     public Document createDocument(String name, Folder parent) {
         Document d = new SimpleDocument(name);
         if (parent != null)
-            parent.addChild(new SimpleDocument(name));
+            parent.addChild(d);
         return d;
     }
 
@@ -98,33 +99,8 @@ public class SimpleHierarchy implements FolderHierarchy {
     public Folder createFolder(String name, Folder parent) {
         Folder f = new SimpleFolder(name);
         if (parent != null)
-            parent.addChild(new SimpleFolder(name));
+            parent.addChild(f);
         return f;
-    }
-
-    @Override
-    public Comparator<Containable> getComparator() {
-        return (o1, o2) -> {
-            if (o1 instanceof Folder && o2 instanceof Document)
-                return -1;
-            else if (o1 instanceof Document && o2 instanceof Folder)
-                return 1;
-            else
-                return o1.getName().compareTo(o2.getName());
-        };
-    }
-
-    @Override
-    public void export(String filename) {
-        try {
-            HierarchyXmlDescription description = new HierarchyXmlDescription(this);
-            JAXBContext jc = JAXBContext.newInstance(HierarchyXmlDescription.class);
-            Marshaller m = jc.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            m.marshal(description, new File(filename));
-        } catch (JAXBException e) {
-            logger.error(e);
-        }
     }
 
     @Override

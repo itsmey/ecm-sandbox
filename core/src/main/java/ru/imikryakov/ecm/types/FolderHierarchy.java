@@ -1,5 +1,12 @@
 package ru.imikryakov.ecm.types;
 
+import org.apache.logging.log4j.Logger;
+import ru.imikryakov.ecm.HierarchyXmlDescription;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.File;
 import java.util.Comparator;
 import java.util.List;
 
@@ -16,7 +23,28 @@ public interface FolderHierarchy {
     Document createDocument(String name, Folder parent);
     Folder createFolder(String name);
     Folder createFolder(String name, Folder parent);
-    Comparator<Containable> getComparator();
-    void export(String filename);
     void close();
+
+    default Comparator<Containable> getComparator() {
+        return (o1, o2) -> {
+            if (o1 instanceof Folder && o2 instanceof Document)
+                return -1;
+            else if (o1 instanceof Document && o2 instanceof Folder)
+                return 1;
+            else
+                return o1.getName().compareTo(o2.getName());
+        };
+    }
+
+    default void export(String filename, Logger logger) {
+        try {
+            HierarchyXmlDescription description = new HierarchyXmlDescription(this);
+            JAXBContext jc = JAXBContext.newInstance(HierarchyXmlDescription.class);
+            Marshaller m = jc.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            m.marshal(description, new File(filename));
+        } catch (JAXBException e) {
+            logger.error(e);
+        }
+    }
 }

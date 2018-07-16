@@ -6,17 +6,19 @@ import ru.imikryakov.ecm.config.Config;
 import ru.imikryakov.ecm.config.Properties;
 
 import java.sql.*;
+import java.util.Arrays;
 
-public class DbHelper {
+class DbHelper {
     private static Logger logger = LogManager.getLogger();
 
-    private static String DRIVER_CLASS_NAME = "org.sqlite.JDBC";
-    private static final String CONNECTION_URL = "jdbc:sqlite:" + Config.getProperty(Properties.SQLITE_DB_NAME);
+    static int TYPE_FOLDER = 0;
+    static int TYPE_DOCUMENT = 1;
+
     private static DbHelper instance = null;
 
     private Connection connection;
 
-    public static synchronized DbHelper getInstance() throws SQLException {
+    static synchronized DbHelper getInstance() {
         if (instance == null)
             instance = new DbHelper();
         return instance;
@@ -24,8 +26,9 @@ public class DbHelper {
 
     private DbHelper() {
         try {
+            String DRIVER_CLASS_NAME = "org.sqlite.JDBC";
             Class.forName(DRIVER_CLASS_NAME);
-            connection = DriverManager.getConnection(CONNECTION_URL);
+            connection = DriverManager.getConnection("jdbc:sqlite:" + Config.getProperty(Properties.SQLITE_DB_NAME));
             init();
         } catch (SQLException | ClassNotFoundException e) {
             logger.error(e);
@@ -47,21 +50,57 @@ public class DbHelper {
 
     private void init() throws SQLException {
         Statement stmt = connection.createStatement();
-        String queryFolder = "CREATE IF NOT EXISTS TABLE Folder " +
-                "(ID INT PRIMARY KEY NOT NULL, " +
+        String query = "CREATE TABLE IF NOT EXISTS Containable " +
+                "(ID VARCHAR(100) PRIMARY KEY NOT NULL, " +
                 "NAME VARCHAR(100) NOT NULL, " +
-                "PARENT_ID INT, " +
-                "IS_CURRENT INT)";
-        String queryDocument = "CREATE IF NOT EXISTS TABLE Document " +
-                "(ID INT PRIMARY KEY NOT NULL, " +
-                "NAME VARCHAR(100) NOT NULL, " +
-                "PARENT_ID INT)";
-        stmt.executeUpdate(queryFolder);
-        stmt.executeUpdate(queryDocument);
+                "PARENT_ID VARCHAR(100), " +
+                "IS_CURRENT BOOLEAN, " +
+                "TYPE INT)";
+        stmt.executeUpdate(query);
         stmt.close();
     }
 
-    public Statement getStatement() throws SQLException {
-        return connection.createStatement();
+    PreparedStatement getPreparedStatement(String query) throws SQLException {
+        return connection.prepareStatement(query);
+    }
+
+    Object getValue(String query, String fieldName, Object... args) {
+        logger.trace("getValue: " + query + " | " + fieldName + " | " + Arrays.toString(args));
+        try {
+            PreparedStatement stmt = getPreparedStatement(query);
+            int i = 1;
+            for (Object arg : args) {
+                stmt.setObject(i++, arg);
+            }
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            Object value = rs.getObject(fieldName);
+            stmt.close();
+            return value;
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    void setValue(String query, Object... args) {
+        logger.trace("setValue: " + query + " | " + Arrays.toString(args));
+        try {
+            PreparedStatement stmt = getPreparedStatement(query);
+            int i = 1;
+            for (Object arg : args) {
+                stmt.setObject(i++, arg);
+            }
+            stmt.executeUpdate();
+            stmt.close();
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    void insert(String query, Object... args) {
+        logger.trace("insert: " + query + " | " + Arrays.toString(args));
+        setValue(query, args);
     }
 }
