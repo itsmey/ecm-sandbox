@@ -12,6 +12,7 @@
         <module>core</module>
         <module>cli</module>
         <module>config</module>
+        <module>webapp-servlet</module>
     </modules>
 
     <build>
