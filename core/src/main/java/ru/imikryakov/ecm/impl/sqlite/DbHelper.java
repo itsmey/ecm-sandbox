@@ -2,11 +2,8 @@ package ru.imikryakov.ecm.impl.sqlite;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.imikryakov.ecm.config.Config;
-import ru.imikryakov.ecm.config.Properties;
 
 import java.sql.*;
-import java.util.Arrays;
 
 class DbHelper {
     private static Logger logger = LogManager.getLogger();
@@ -28,8 +25,7 @@ class DbHelper {
         try {
             String DRIVER_CLASS_NAME = "org.sqlite.JDBC";
             Class.forName(DRIVER_CLASS_NAME);
-            connection = DriverManager.getConnection("jdbc:sqlite:" + Config.getProperty(Properties.SQLITE_DB_NAME));
-            init();
+            connection = DriverManager.getConnection("jdbc:sqlite:" + SqliteHierarchy.DB_NAME);
         } catch (SQLException | ClassNotFoundException e) {
             logger.error(e);
             try {
@@ -48,7 +44,7 @@ class DbHelper {
         }
     }
 
-    void init() {
+    void init(boolean dropExisting) {
         try {
             Statement stmt = connection.createStatement();
             String dropQuery = "DROP TABLE IF EXISTS CONTAINABLE";
@@ -58,7 +54,8 @@ class DbHelper {
                     "PARENT_ID VARCHAR(100), " +
                     "IS_CURRENT BOOLEAN, " +
                     "TYPE INT)";
-            stmt.executeUpdate(dropQuery);
+            if (dropExisting)
+                stmt.executeUpdate(dropQuery);
             stmt.executeUpdate(createQuery);
             stmt.close();
         } catch (SQLException e) {
@@ -72,7 +69,6 @@ class DbHelper {
     }
 
     Object getValue(String query, String fieldName, Object... args) {
-        logger.trace("getValue: " + query + " | " + fieldName + " | " + Arrays.toString(args));
         try {
             PreparedStatement stmt = getPreparedStatement(query);
             int i = 1;
@@ -91,7 +87,6 @@ class DbHelper {
     }
 
     void setValue(String query, Object... args) {
-        logger.trace("setValue: " + query + " | " + Arrays.toString(args));
         try {
             PreparedStatement stmt = getPreparedStatement(query);
             int i = 1;
@@ -107,7 +102,6 @@ class DbHelper {
     }
 
     void insert(String query, Object... args) {
-        logger.trace("insert: " + query + " | " + Arrays.toString(args));
         setValue(query, args);
     }
 }

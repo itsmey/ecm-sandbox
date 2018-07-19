@@ -24,6 +24,14 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.23.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.filenet</groupId>
+            <artifactId>jace</artifactId>
+            <version>5.2.1</version>
+            <scope>system</scope>
+            <!--due to license restrictions, i can't have this jar in git-->
+            <systemPath>${project.basedir}/../lib/jace.jar</systemPath>
+        </dependency>
     </dependencies>
 
 </project>

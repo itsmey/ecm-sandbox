@@ -21,4 +21,9 @@ public class SqliteHierarchyFactory extends SimpleHierarchyFactory {
         }
         return new SqliteHierarchy();
     }
+
+    @Override
+    public FolderHierarchy createExisting(String dataSourceId) {
+        return new SqliteHierarchy(dataSourceId);
+    }
 }

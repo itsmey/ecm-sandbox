@@ -2,6 +2,8 @@ package ru.imikryakov.ecm.impl.sqlite;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.imikryakov.ecm.config.Config;
+import ru.imikryakov.ecm.config.Properties;
 import ru.imikryakov.ecm.types.Containable;
 import ru.imikryakov.ecm.types.Document;
 import ru.imikryakov.ecm.types.Folder;
@@ -12,11 +14,19 @@ import java.util.List;
 
 public class SqliteHierarchy implements FolderHierarchy {
     private static Logger logger = LogManager.getLogger();
+    static String DB_NAME;
     private DbHelper dbHelper;
 
-    SqliteHierarchy() {
+    SqliteHierarchy(String dbName) {
+        DB_NAME = dbName;
         dbHelper = DbHelper.getInstance();
-        dbHelper.init();
+        dbHelper.init(false);
+    }
+
+    SqliteHierarchy() {
+        DB_NAME = Config.getProperty(Properties.SQLITE_DB_NAME);
+        dbHelper = DbHelper.getInstance();
+        dbHelper.init(true);
         createFolder("Root", null);
         setRootAsCurrent();
     }

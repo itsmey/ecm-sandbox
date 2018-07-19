@@ -48,15 +48,27 @@ public class Config {
         }
     }
 
-    public static String getProperty(String name) {
+    public static String getProperty(String name, boolean exceptionOnNull) {
         if (!isInitialized) {
             initConfig();
         }
         String value = props.getProperty(name);
         if (value == null) {
-            return defaultProps.getProperty(name);
+            return checkValue(name, defaultProps.getProperty(name), exceptionOnNull);
         } else {
-            return null;
+            return checkValue(name, value, exceptionOnNull);
+        }
+    }
+
+    public static String getProperty(String name) {
+        return getProperty(name, false);
+    }
+
+    private static String checkValue(String name, String value, boolean exceptionOnNull) {
+        if (value == null && exceptionOnNull) {
+            throw new RuntimeException("required property " + name + " not found!");
+        } else {
+            return value;
         }
     }
 }

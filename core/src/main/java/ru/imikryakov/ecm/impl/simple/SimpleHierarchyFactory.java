@@ -40,4 +40,9 @@ public class SimpleHierarchyFactory implements FolderHierarchyFactory {
             return null;
         }
     }
+
+    @Override
+    public FolderHierarchy createExisting(String dataSourceId) {
+        throw new RuntimeException("This creation method is not applicable for current configuration!");
+    }
 }
