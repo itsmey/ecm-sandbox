@@ -42,7 +42,7 @@ public class SimpleHierarchyFactory implements FolderHierarchyFactory {
     }
 
     @Override
-    public FolderHierarchy createExisting(String dataSourceId) {
+    public FolderHierarchy createExisting() {
         throw new RuntimeException("This creation method is not applicable for current configuration!");
     }
 }

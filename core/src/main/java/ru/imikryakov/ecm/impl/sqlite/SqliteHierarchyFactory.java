@@ -23,7 +23,7 @@ public class SqliteHierarchyFactory extends SimpleHierarchyFactory {
     }
 
     @Override
-    public FolderHierarchy createExisting(String dataSourceId) {
-        return new SqliteHierarchy(dataSourceId);
+    public FolderHierarchy createExisting() {
+        return new SqliteHierarchy(Config.getProperty(Properties.SQLITE_DB_NAME));
     }
 }

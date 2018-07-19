@@ -9,6 +9,15 @@ public interface Properties {
         String FILENET = "FILENET";
     }
 
+    interface HierarchyFactory {
+        String TITLE = "hierarchy.factory";
+
+        String EMPTY = "EMPTY";
+        String RANDOMIZED = "RANDOMIZED";
+        String FROM_XML = "FROM_XML";
+        String EXISTING = "EXISTING";
+    }
+
     String SQLITE_DB_NAME = "hierarchy.sqlite.db_name";
 
     String FILENET_URI = "hierarchy.filenet.uri";

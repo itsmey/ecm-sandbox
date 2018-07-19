@@ -22,7 +22,7 @@ public class FileNetHierarchyFactory implements FolderHierarchyFactory {
     }
 
     @Override
-    public FolderHierarchy createExisting(String dataSourceId) {
+    public FolderHierarchy createExisting() {
         return new FileNetHierarchy(Config.getProperty(Properties.FILENET_OBJECT_STORE_NAME, true));
     }
 }

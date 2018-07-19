@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.imikryakov.ecm.FolderHierarchyManager;
 import ru.imikryakov.ecm.cli.actions.Action;
-import ru.imikryakov.ecm.config.Config;
-import ru.imikryakov.ecm.config.Properties;
 import ru.imikryakov.ecm.types.FolderHierarchy;
 
 import java.io.PrintStream;
@@ -15,7 +13,7 @@ public class Launcher {
     private static final Logger logger = LogManager.getLogger(Launcher.class.getName());
     private static final PrintStream OUTPUT = System.out;
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static FolderHierarchy hierarchy = FolderHierarchyManager.get().createExisting(Config.getProperty(Properties.SQLITE_DB_NAME));
+    private static FolderHierarchy hierarchy = FolderHierarchyManager.get().createExisting();
 
     public static void main(String[] args) {
         Action.createActions();

@@ -4,5 +4,5 @@ public interface FolderHierarchyFactory {
     FolderHierarchy createEmpty();
     FolderHierarchy createRandomized();
     FolderHierarchy createFromXML(String filename);
-    FolderHierarchy createExisting(String dataSourceId);
+    FolderHierarchy createExisting();
 }
