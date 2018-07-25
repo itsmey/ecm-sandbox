@@ -13,6 +13,6 @@ public class ToXmlAction extends Action {
     @Override
     public void perform() {
         print("Enter name of the XML file: ");
-        getHierarchy().export(next(), logger);
+        getHierarchy().exportToXML(next(), logger);
     }
 }

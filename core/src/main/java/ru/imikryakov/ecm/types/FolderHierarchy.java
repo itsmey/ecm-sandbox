@@ -36,7 +36,7 @@ public interface FolderHierarchy {
         };
     }
 
-    default void export(String filename, Logger logger) {
+    default void exportToXML(String filename, Logger logger) {
         try {
             HierarchyXmlDescription description = new HierarchyXmlDescription(this);
             JAXBContext jc = JAXBContext.newInstance(HierarchyXmlDescription.class);
