@@ -32,6 +32,11 @@
             <!--due to license restrictions, i can't have this jar in git-->
             <systemPath>${project.basedir}/../lib/jace.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 </project>

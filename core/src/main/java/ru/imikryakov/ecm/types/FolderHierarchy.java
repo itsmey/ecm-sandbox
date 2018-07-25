@@ -1,12 +1,17 @@
 package ru.imikryakov.ecm.types;
 
 import org.apache.logging.log4j.Logger;
+import ru.imikryakov.ecm.HierarchyJsonDescription;
 import ru.imikryakov.ecm.HierarchyXmlDescription;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.File;
+import java.io.Writer;
 import java.util.Comparator;
 import java.util.List;
 
@@ -46,5 +51,11 @@ public interface FolderHierarchy {
         } catch (JAXBException e) {
             logger.error(e);
         }
+    }
+
+    default void exportToJson(Writer writer, Logger logger) {
+        JsonWriter jWriter = Json.createWriter(writer);
+        JsonObject jHierarchy = HierarchyJsonDescription.getJsonObject(this);
+        jWriter.writeObject(jHierarchy);
     }
 }
