@@ -76,7 +76,9 @@ class DbHelper {
                 stmt.setObject(i++, arg);
             }
             ResultSet rs = stmt.executeQuery();
-            rs.next();
+            if (!rs.next()) {
+                return null;
+            }
             Object value = rs.getObject(fieldName);
             stmt.close();
             return value;

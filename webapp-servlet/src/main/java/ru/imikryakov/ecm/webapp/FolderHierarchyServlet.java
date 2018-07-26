@@ -35,23 +35,20 @@ public class FolderHierarchyServlet extends HttpServlet {
         logger.trace("query string " + req.getQueryString());
 
         String action = req.getParameter("action");
+
+        if (action == null) {
+            resp.sendRedirect("show.html");
+            return;
+        }
+
         switch (action) {
             case "show": {
-                hierarchy.exportToJSON(resp.getWriter(), logger);
+                hierarchy.exportToJson(resp.getWriter(), logger);
                 return;
             }
+            default: {
+                resp.getWriter().write("Invalid command.");
+            }
         }
-
-        Enumeration<String> e = req.getAttributeNames();
-        while (e.hasMoreElements()) {
-            logger.trace("attributeName " + e.nextElement());
-        }
-
-        e = req.getParameterNames();
-        while (e.hasMoreElements()) {
-            logger.trace("parameterName " + e.nextElement());
-        }
-
-        resp.sendRedirect("show.html");
     }
 }

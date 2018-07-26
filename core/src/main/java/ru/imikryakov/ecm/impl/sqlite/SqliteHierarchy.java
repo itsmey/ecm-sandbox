@@ -21,6 +21,10 @@ public class SqliteHierarchy implements FolderHierarchy {
         DB_NAME = dbName;
         dbHelper = DbHelper.getInstance();
         dbHelper.init(false);
+        if (dbHelper.getValue("SELECT ID FROM CONTAINABLE WHERE PARENT_ID IS NULL", "ID") == null) {
+            createFolder("Root", null);
+            setRootAsCurrent();
+        }
     }
 
     SqliteHierarchy() {
