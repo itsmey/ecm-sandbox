@@ -2,6 +2,7 @@ package ru.imikryakov.ecm.impl.sqlite;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.imikryakov.ecm.impl.filenet.FileNetContainable;
 import ru.imikryakov.ecm.types.Containable;
 import ru.imikryakov.ecm.types.Folder;
 
@@ -51,5 +52,16 @@ abstract class SqliteContainable implements Containable {
         return id;
     }
 
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SqliteContainable)
+            return hashCode() == obj.hashCode();
+        else
+            return false;
+    }
 }

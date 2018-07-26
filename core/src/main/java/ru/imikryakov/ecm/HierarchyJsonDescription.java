@@ -5,16 +5,14 @@ import ru.imikryakov.ecm.types.Document;
 import ru.imikryakov.ecm.types.Folder;
 import ru.imikryakov.ecm.types.FolderHierarchy;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
+import javax.json.*;
 
 public class HierarchyJsonDescription {
     public static JsonObject getJsonObject(FolderHierarchy hierarchy) {
-        return Json.createObjectBuilder().add("folder", createJsonFolder(hierarchy.getRootFolder())).build();
+        return Json.createObjectBuilder().add("folder", createJsonFolder(hierarchy.getRootFolder(), hierarchy.getCurrentFolder())).build();
     }
 
-    private static JsonObject createJsonFolder(Folder folder) {
+    private static JsonObject createJsonFolder(Folder folder, Folder currentFolder) {
         JsonArrayBuilder containablesBuilder = Json.createArrayBuilder();
 
         for (Containable c : folder.getChildren()) {
@@ -22,12 +20,17 @@ public class HierarchyJsonDescription {
                 containablesBuilder.add(createJsonDocument((Document)c));
             }
             if (c instanceof Folder) {
-                containablesBuilder.add(createJsonFolder((Folder)c));
+                containablesBuilder.add(createJsonFolder((Folder)c, currentFolder));
             }
         }
 
-        return Json.createObjectBuilder()
-                .add("name", folder.getName())
+        JsonObjectBuilder result = Json.createObjectBuilder()
+                .add("name", folder.getName());
+
+        if (folder.equals(currentFolder))
+            result.add("current", JsonValue.TRUE);
+
+        return result
                 .add("containables", containablesBuilder.build())
                 .build();
     }

@@ -63,4 +63,17 @@ public abstract class FileNetContainable implements Containable {
     public Map<String, Object> getProperties() {
         return null;
     }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof FileNetContainable)
+            return hashCode() == obj.hashCode();
+        else
+            return false;
+    }
 }

@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <title>ECM Sandbox</title>
-    </head>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="life.css">
+    <script src="show.js" defer></script>
+    <title>ECM Sandbox</title>
+</head>
     <body>
-        <p>test</p>
+        <div>
+            <input type="button" id="refreshButton" value="Refresh">
+            <input type="button" id="createFolderButton" value="Create folder">
+            <input type="button" id="createDocumentButton" value="Create document">
+            <input type="button" id="goToButton" value="Go to folder">
+            <input type="button" id="upButton" value="Up">
+            <br>
+            <label for="name">Name:</label><input id="name" type="text">
+        </div>
+        <div id="canvas"></div>
     </body>
 </html>

@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 
 public class FolderHierarchyServlet extends HttpServlet {
     private static Logger logger = LogManager.getLogger();
@@ -44,7 +43,42 @@ public class FolderHierarchyServlet extends HttpServlet {
         switch (action) {
             case "show": {
                 hierarchy.exportToJson(resp.getWriter(), logger);
-                return;
+                break;
+            }
+            case "createFolder": {
+                String name = req.getParameter("name");
+                if (name == null) {
+                    resp.getWriter().write("Please specify name.");
+                    return;
+                }
+                hierarchy.createFolder(name);
+                hierarchy.exportToJson(resp.getWriter(), logger);
+                break;
+            }
+            case "createDocument": {
+                String name = req.getParameter("name");
+                if (name == null) {
+                    resp.getWriter().write("Please specify name.");
+                    return;
+                }
+                hierarchy.createDocument(name);
+                hierarchy.exportToJson(resp.getWriter(), logger);
+                break;
+            }
+            case "goTo": {
+                String name = req.getParameter("name");
+                if (name == null) {
+                    resp.getWriter().write("Please specify name.");
+                    return;
+                }
+                hierarchy.goToFolder(name);
+                hierarchy.exportToJson(resp.getWriter(), logger);
+                break;
+            }
+            case "up": {
+                hierarchy.up();
+                hierarchy.exportToJson(resp.getWriter(), logger);
+                break;
             }
             default: {
                 resp.getWriter().write("Invalid command.");
