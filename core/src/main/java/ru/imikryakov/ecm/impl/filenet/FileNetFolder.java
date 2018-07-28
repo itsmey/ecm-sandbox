@@ -1,11 +1,6 @@
 package ru.imikryakov.ecm.impl.filenet;
 
-import com.filenet.api.constants.RefreshMode;
-import com.filenet.api.core.Factory;
 import com.filenet.api.core.IndependentlyPersistableObject;
-import com.filenet.api.core.ObjectStore;
-import com.filenet.api.property.FilterElement;
-import com.filenet.api.property.PropertyFilter;
 import com.filenet.api.util.Id;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,45 +12,26 @@ import java.util.*;
 class FileNetFolder extends FileNetContainable implements Folder {
     private static Logger logger = LogManager.getLogger();
 
-    FileNetFolder(String name, Folder parent, ObjectStore objectStore, Map<Id, com.filenet.api.core.Containable> cache) {
-        super(objectStore, cache);
+    FileNetFolder(String name, Folder parent, FileNetManager filenet, Map<Id, com.filenet.api.core.Containable> cache) {
+        super(filenet, cache);
         ceFolder().set_FolderName(name);
         ceFolder().set_Parent(((FileNetFolder)parent).ceFolder());
-        ceInstance().save(RefreshMode.REFRESH, getPropertyFilter());
+        filenet.save(ceInstance());
         cache.put(instance.get_Id(), instance);
     }
 
-    FileNetFolder(Id id, ObjectStore objectStore, Map<Id, com.filenet.api.core.Containable> cache) {
-        super(id, objectStore, cache);
-    }
-
-    private static PropertyFilter propertyFilter;
-
-    static {
-        initPropertyFilter();
-    }
-
-    @Override
-    public PropertyFilter getPropertyFilter() {
-        return propertyFilter;
-    }
-
-    private static void initPropertyFilter() {
-        propertyFilter = new PropertyFilter();
-        List<String> props = Arrays.asList("SubFolders", "ContainedDocuments", "Id", "PathName", "Parent", "Name");
-        for (String s : props) {
-            propertyFilter.addIncludeProperty(new FilterElement(null, null, null, s, null));
-        }
+    FileNetFolder(Id id, FileNetManager filenet, Map<Id, com.filenet.api.core.Containable> cache) {
+        super(id, filenet, cache);
     }
 
     @Override
     public com.filenet.api.core.Containable fetchInstance() {
-        return Factory.Folder.fetchInstance(objectStore, id, propertyFilter);
+        return filenet.fetchFolder(id);
     }
 
     @Override
     public com.filenet.api.core.Containable createInstance() {
-        return Factory.Folder.createInstance(objectStore, "Folder", id);
+        return filenet.createFolder(id);
     }
 
     @Override
@@ -72,14 +48,14 @@ class FileNetFolder extends FileNetContainable implements Folder {
         if (ceFolder().get_Parent() == null) {
             return null;
         } else {
-            return new FileNetFolder(ceFolder().get_Parent().get_Id(), objectStore, cache);
+            return new FileNetFolder(ceFolder().get_Parent().get_Id(), filenet, cache);
         }
     }
 
     @Override
     public void setParent(Folder parent) {
-        ceFolder().set_Parent(new FileNetFolder(((FileNetFolder)parent).getId(), objectStore, cache).ceFolder());
-        ceInstance().save(RefreshMode.REFRESH, propertyFilter);
+        ceFolder().set_Parent(new FileNetFolder(((FileNetFolder)parent).getId(), filenet, cache).ceFolder());
+        filenet.save(ceInstance());
     }
 
     @Override
@@ -88,13 +64,12 @@ class FileNetFolder extends FileNetContainable implements Folder {
         Iterator i = ceFolder().get_SubFolders().iterator();
         while (i.hasNext()) {
             com.filenet.api.core.Folder f = (com.filenet.api.core.Folder)i.next();
-//            logger.trace(f.get_PathName());
-            result.add(new FileNetFolder(f.get_Id(), objectStore, cache));
+            result.add(new FileNetFolder(f.get_Id(), filenet, cache));
         }
         i = ceFolder().get_ContainedDocuments().iterator();
         while (i.hasNext()) {
             com.filenet.api.core.Document f = (com.filenet.api.core.Document)i.next();
-            result.add(new FileNetDocument(f.get_Id(), objectStore, cache));
+            result.add(new FileNetDocument(f.get_Id(), filenet, cache));
         }
         return result;
     }

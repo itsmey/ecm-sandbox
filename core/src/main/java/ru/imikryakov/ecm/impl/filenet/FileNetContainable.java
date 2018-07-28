@@ -1,8 +1,6 @@
 package ru.imikryakov.ecm.impl.filenet;
 
 import com.filenet.api.core.IndependentlyPersistableObject;
-import com.filenet.api.core.ObjectStore;
-import com.filenet.api.property.PropertyFilter;
 import com.filenet.api.util.Id;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,23 +11,23 @@ import java.util.UUID;
 
 public abstract class FileNetContainable implements Containable {
     private static Logger logger = LogManager.getLogger();
-    ObjectStore objectStore;
+    FileNetManager filenet;
     Id id;
     com.filenet.api.core.Containable instance;
     Map<Id, com.filenet.api.core.Containable> cache;
 
-    FileNetContainable(ObjectStore objectStore, Map<Id, com.filenet.api.core.Containable> cache) {
+    FileNetContainable(FileNetManager filenet, Map<Id, com.filenet.api.core.Containable> cache) {
         this.cache = cache;
-        this.objectStore = objectStore;
+        this.filenet = filenet;
         id = new Id(UUID.randomUUID().toString());
         logger.trace("creating new Containable with id = " + id);
         instance = createInstance();
     }
 
-    FileNetContainable(Id id, ObjectStore objectStore, Map<Id, com.filenet.api.core.Containable> cache) {
+    FileNetContainable(Id id, FileNetManager filenet, Map<Id, com.filenet.api.core.Containable> cache) {
         logger.trace("fetching Containable with id = " + id);
         this.cache = cache;
-        this.objectStore = objectStore;
+        this.filenet = filenet;
         this.id = id;
         instance = cache.get(id);
         if (instance == null) {
@@ -38,11 +36,9 @@ public abstract class FileNetContainable implements Containable {
             cache.put(instance.get_Id(), instance);
         } else {
             logger.trace("found in cache. refresh");
-            ceInstance().refresh(getPropertyFilter());
+            filenet.refresh(ceInstance());
         }
     }
-
-    public abstract PropertyFilter getPropertyFilter();
 
     public abstract com.filenet.api.core.Containable fetchInstance();
 

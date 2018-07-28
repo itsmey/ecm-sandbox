@@ -1,23 +1,13 @@
 package ru.imikryakov.ecm.impl.filenet;
 
-import com.filenet.api.core.Connection;
-import com.filenet.api.core.Domain;
-import com.filenet.api.core.Factory;
-import com.filenet.api.core.ObjectStore;
-import com.filenet.api.meta.ClassDescription;
-import com.filenet.api.meta.PropertyDescription;
 import com.filenet.api.util.Id;
-import com.filenet.api.util.UserContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.imikryakov.ecm.config.Config;
-import ru.imikryakov.ecm.config.Properties;
 import ru.imikryakov.ecm.types.Containable;
 import ru.imikryakov.ecm.types.Document;
 import ru.imikryakov.ecm.types.Folder;
 import ru.imikryakov.ecm.types.FolderHierarchy;
 
-import javax.security.auth.Subject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,42 +16,17 @@ class FileNetHierarchy implements FolderHierarchy {
     private static Logger logger = LogManager.getLogger();
 
     private Map<Id, com.filenet.api.core.Containable> cache = new HashMap<>();
-
-    private UserContext userContext;
-    private ObjectStore objectStore;
-
+    private FileNetManager filenet;
     private Id currentId;
 
     FileNetHierarchy(String objectStoreName) {
-        String uri = Config.getProperty(Properties.FILENET_URI, true);
-        String login = Config.getProperty(Properties.FILENET_LOGIN, true);
-        String password = Config.getProperty(Properties.FILENET_PASSWORD, true);
-
-        Connection conn = Factory.Connection.getConnection(uri);
-        userContext = UserContext.get();
-        Subject subject = UserContext.createSubject(conn, login, password, null);
-
-        userContext.pushSubject(subject);
-
-        Domain domain = Factory.Domain.getInstance(conn, null);
-        objectStore = Factory.ObjectStore.fetchInstance(domain, objectStoreName, null);
-
-        String nameProperty = null;
-        ClassDescription cd = Factory.ClassDescription.fetchInstance(objectStore, "Document", null);
-        if (cd.get_NamePropertyIndex() != null) {
-            nameProperty =
-                    ((PropertyDescription)cd.get_PropertyDescriptions().get(cd.get_NamePropertyIndex())).get_SymbolicName();
-        }
-
-        logger.trace("name property for Document is " + nameProperty);
-        FileNetDocument.initPropertyFilter(nameProperty);
-
+        filenet = new FileNetManager(objectStoreName);
         setRootAsCurrent();
     }
 
     @Override
     public Folder getRootFolder() {
-        return new FileNetFolder(objectStore.get_RootFolder().get_Id(), objectStore, cache);
+        return new FileNetFolder(filenet.getRootFolder().get_Id(), filenet, cache);
     }
 
     @Override
@@ -71,7 +36,7 @@ class FileNetHierarchy implements FolderHierarchy {
 
     @Override
     public Folder getCurrentFolder() {
-        return new FileNetFolder(currentId, objectStore, cache);
+        return new FileNetFolder(currentId, filenet, cache);
     }
 
     @Override
@@ -81,14 +46,7 @@ class FileNetHierarchy implements FolderHierarchy {
 
     @Override
     public String getCurrentPath() {
-//        Folder p = getCurrentFolder();
-//        String path = p.getName();
-//        while (p.getParent() != null) {
-//            p = p.getParent();
-//            path = p.getName() + "/" + path;
-//        }
-//        return path;
-        return new FileNetFolder(currentId, objectStore, cache).ceFolder().get_PathName();
+        return new FileNetFolder(currentId, filenet, cache).ceFolder().get_PathName();
     }
 
     @Override
@@ -120,7 +78,7 @@ class FileNetHierarchy implements FolderHierarchy {
 
     @Override
     public Document createDocument(String name, Folder parent) {
-        Document d = new FileNetDocument(name, objectStore, cache);
+        Document d = new FileNetDocument(name, filenet, cache);
         d.setParent(parent);
         return d;
     }
@@ -132,12 +90,13 @@ class FileNetHierarchy implements FolderHierarchy {
 
     @Override
     public Folder createFolder(String name, Folder parent) {
-        return new FileNetFolder(name, parent, objectStore, cache);
+        return new FileNetFolder(name, parent, filenet, cache);
     }
 
     @Override
     public void close() {
-        if (userContext != null)
-            userContext.popSubject();
+        if (filenet != null) {
+            filenet.disconnect();
+        }
     }
 }
