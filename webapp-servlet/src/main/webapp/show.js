@@ -19,13 +19,22 @@ function request(url) {
 
 function addContainable(containable, parent) {
     var div = document.createElement('div');
+    var span = document.createElement('span')
     var isCurrent = containable.current;
     var isFolder = containable.containables;
-    var name = containable.name + (isCurrent ? ' (current)' : '');
+    var name = containable.name;
     if (isFolder) {
-        name = '[' + name + ']';
+        span.classList.add("folder");
+    } else {
+        span.classList.remove("folder");
     }
-    div.innerHTML = name;
+    if (isCurrent) {
+        span.classList.toggle("current");
+    } else {
+        span.classList.remove("current");
+    }
+    span.innerHTML = name;
+    div.innerHTML = span.outerHTML;
     div.style.marginLeft = '10px';
     parent.appendChild(div);
     if (isFolder) {
